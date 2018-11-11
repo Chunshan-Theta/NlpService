@@ -1,0 +1,77 @@
+---
+swagger: "2.0"
+info:
+  description: "for NLP"
+  version: "1.0.0"
+  title: "NLP"
+  termsOfService: ""
+  contact:
+    name: "Developer Gavin"
+    email: "gavin19950511@gmail.com"
+  license:
+    name: "Apache 2.0"
+host: "localhost:8081"
+basePath: "/NLP"
+tags:
+- name: "word2vec"
+  description: "from word2vec"
+schemes:
+- "http"
+paths:
+  /word2vec/wordDistance:
+    get:
+      tags:
+      - "word2vec"
+      summary: "getting data of member."
+      description: "usually for logining method or getting a member's data."
+      operationId: "word2vec_word_distance_get"
+      parameters:
+      - name: "word"
+        in: "query"
+        description: "split by ',' "
+        required: true
+        type: "string"
+        default: "英國,美國,台灣"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/wordDistanceResult"
+        400:
+          description: "rare word"
+          schema:
+            $ref: "#/definitions/errorRespond"
+      x-swagger-router-controller: "swagger_server.controllers.word2vec_controller"
+definitions:
+  wordDistanceResult:
+    type: "object"
+    properties:
+      keyWord:
+        $ref: "#/definitions/wordDistanceResult_keyWord"
+    example:
+      keyWord:
+        verificationWord:
+          distance: "distance"
+  errorRespond:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+      text:
+        type: "string"
+    example:
+      code: "404"
+      text: "rare word"
+  wordDistanceResult_keyWord_verificationWord:
+    properties:
+      distance:
+        type: "string"
+    example:
+      distance: "distance"
+  wordDistanceResult_keyWord:
+    properties:
+      verificationWord:
+        $ref: "#/definitions/wordDistanceResult_keyWord_verificationWord"
+    example:
+      verificationWord:
+        distance: "distance"
