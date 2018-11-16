@@ -1,9 +1,8 @@
-import connexion
-import six
+#import connexion
+#import six
 
 from swagger_server.models.server_status_respond import ServerStatusRespond  # noqa: E501
 from swagger_server import util
-
 
 def speech_emotion_options():  # noqa: E501
     """

@@ -15,7 +15,7 @@ class TestCheckStatusController(BaseTestCase):
     def test_speech_emotion_options(self):
         """Test case for speech_emotion_options
 
-        
+
         """
         response = self.client.open(
             '/NLP/speech/emotion',
@@ -26,7 +26,7 @@ class TestCheckStatusController(BaseTestCase):
     def test_speech_five_divisions_options(self):
         """Test case for speech_five_divisions_options
 
-        
+
         """
         response = self.client.open(
             '/NLP/speech/fiveDivisions',
@@ -37,7 +37,7 @@ class TestCheckStatusController(BaseTestCase):
     def test_speech_score_options(self):
         """Test case for speech_score_options
 
-        
+
         """
         response = self.client.open(
             '/NLP/speech/score',

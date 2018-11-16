@@ -10,7 +10,7 @@ info:
     email: "gavin19950511@gmail.com"
   license:
     name: "Apache 2.0"
-host: "localhost:3082"
+host: "localhost:8082"
 basePath: "/NLP"
 tags:
 - name: "speechAnalysis"
@@ -90,7 +90,15 @@ paths:
       parameters: []
       responses:
         200:
-          description: "OK"
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+              default: "*"
           schema:
             $ref: "#/definitions/serverStatusRespond"
       x-swagger-router-controller: "swagger_server.controllers.check_status_controller"

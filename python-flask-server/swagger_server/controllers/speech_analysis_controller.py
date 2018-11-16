@@ -6,7 +6,6 @@ from swagger_server.models.score_analysis_result import ScoreAnalysisResult  # n
 from swagger_server.models.sentence import Sentence  # noqa: E501
 from swagger_server.models.speech import Speech  # noqa: E501
 from swagger_server import util
-from swagger_server.controllers.respondFoemat import responds
 
 
 
@@ -22,7 +21,8 @@ def speech_emotion_post(body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = Speech.from_dict(connexion.request.get_json())  # noqa: E501
-    return responds('do some magic!').toResponds
+
+    return 'do some magic!',201,{'header': '123'}
 
 
 def speech_five_divisions_post(body):  # noqa: E501
