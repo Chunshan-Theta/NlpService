@@ -3,7 +3,10 @@
 # flake8: noqa
 from __future__ import absolute_import
 # import models into model package
-from swagger_server.models.error_respond import ErrorRespond
-from swagger_server.models.word_distance_result import WordDistanceResult
-from swagger_server.models.word_distance_result_key_word import WordDistanceResultKeyWord
-from swagger_server.models.word_distance_result_key_word_verification_word import WordDistanceResultKeyWordVerificationWord
+from swagger_server.models.five_divisions_result import FiveDivisionsResult
+from swagger_server.models.requests_error_respond import RequestsErrorRespond
+from swagger_server.models.score_analysis_result import ScoreAnalysisResult
+from swagger_server.models.sentence import Sentence
+from swagger_server.models.server_status_respond import ServerStatusRespond
+from swagger_server.models.speech import Speech
+from swagger_server.models.word import Word

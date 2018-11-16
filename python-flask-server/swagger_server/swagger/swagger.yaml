@@ -10,49 +10,246 @@ info:
     email: "gavin19950511@gmail.com"
   license:
     name: "Apache 2.0"
-host: "localhost:8081"
+host: "localhost:3082"
 basePath: "/NLP"
 tags:
-- name: "word2vec"
-  description: "from word2vec"
+- name: "speechAnalysis"
+  description: "for CLAS"
+- name: "checkStatus"
+  description: "for option method"
 schemes:
 - "http"
 paths:
-  /word2vec/wordDistance:
-    get:
+  /speech/score:
+    post:
       tags:
-      - "word2vec"
-      summary: "getting data of member."
-      description: "usually for logining method or getting a member's data."
-      operationId: "word2vec_word_distance_get"
+      - "speechAnalysis"
+      summary: ""
+      description: ""
+      operationId: "speech_score_post"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
       parameters:
-      - name: "word"
-        in: "query"
-        description: "split by ',' "
+      - in: "body"
+        name: "body"
+        description: ""
         required: true
-        type: "string"
-        default: "英國,美國,台灣"
+        schema:
+          $ref: "#/definitions/speech"
       responses:
         200:
           description: "OK"
           schema:
-            $ref: "#/definitions/wordDistanceResult"
-        400:
-          description: "rare word"
+            $ref: "#/definitions/scoreAnalysisResult"
+      x-swagger-router-controller: "swagger_server.controllers.speech_analysis_controller"
+    options:
+      tags:
+      - "checkStatus"
+      summary: ""
+      description: ""
+      operationId: "speech_score_options"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
           schema:
-            $ref: "#/definitions/errorRespond"
-      x-swagger-router-controller: "swagger_server.controllers.word2vec_controller"
+            $ref: "#/definitions/serverStatusRespond"
+      x-swagger-router-controller: "swagger_server.controllers.check_status_controller"
+  /speech/emotion:
+    post:
+      tags:
+      - "speechAnalysis"
+      summary: ""
+      description: ""
+      operationId: "speech_emotion_post"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/speech"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/sentence"
+      x-swagger-router-controller: "swagger_server.controllers.speech_analysis_controller"
+    options:
+      tags:
+      - "checkStatus"
+      summary: ""
+      description: ""
+      operationId: "speech_emotion_options"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/serverStatusRespond"
+      x-swagger-router-controller: "swagger_server.controllers.check_status_controller"
+  /speech/fiveDivisions:
+    post:
+      tags:
+      - "speechAnalysis"
+      summary: ""
+      description: ""
+      operationId: "speech_five_divisions_post"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/speech"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/fiveDivisionsResult"
+      x-swagger-router-controller: "swagger_server.controllers.speech_analysis_controller"
+    options:
+      tags:
+      - "checkStatus"
+      summary: ""
+      description: ""
+      operationId: "speech_five_divisions_options"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/serverStatusRespond"
+      x-swagger-router-controller: "swagger_server.controllers.check_status_controller"
 definitions:
-  wordDistanceResult:
+  word:
+    type: "object"
+    required:
+    - "content"
+    properties:
+      content:
+        type: "string"
+      word2vec:
+        type: "number"
+      emotion:
+        type: "number"
+    example:
+      emotion: 6.02745618307040320615897144307382404804229736328125
+      word2vec: 0.80082819046101150206595775671303272247314453125
+      content: "content"
+  sentence:
+    type: "object"
+    required:
+    - "source"
+    properties:
+      source:
+        type: "string"
+      wordArray:
+        type: "array"
+        items:
+          $ref: "#/definitions/word"
+      top10:
+        type: "array"
+        items:
+          $ref: "#/definitions/word"
+      emotion:
+        type: "number"
+    example:
+      top10:
+      - emotion: 6.02745618307040320615897144307382404804229736328125
+        word2vec: 0.80082819046101150206595775671303272247314453125
+        content: "content"
+      - emotion: 6.02745618307040320615897144307382404804229736328125
+        word2vec: 0.80082819046101150206595775671303272247314453125
+        content: "content"
+      emotion: 1.46581298050294517310021547018550336360931396484375
+      wordArray:
+      - emotion: 6.02745618307040320615897144307382404804229736328125
+        word2vec: 0.80082819046101150206595775671303272247314453125
+        content: "content"
+      - emotion: 6.02745618307040320615897144307382404804229736328125
+        word2vec: 0.80082819046101150206595775671303272247314453125
+        content: "content"
+      source: "source"
+  speech:
+    type: "object"
+    required:
+    - "source"
+    properties:
+      source:
+        type: "string"
+      topic:
+        type: "string"
+    example:
+      source: "some text is here."
+      topic: "some text about topic is here ."
+  scoreAnalysisResult:
     type: "object"
     properties:
-      keyWord:
-        $ref: "#/definitions/wordDistanceResult_keyWord"
+      score:
+        type: "number"
+      pass:
+        type: "boolean"
+      source:
+        $ref: "#/definitions/sentence"
     example:
-      keyWord:
-        verificationWord:
-          distance: "distance"
-  errorRespond:
+      score: "18.7"
+      pass: 1
+      source:
+        source: "some text is here."
+  fiveDivisionsResult:
+    type: "object"
+    properties:
+      highToLow:
+        type: "array"
+        items:
+          type: "integer"
+      scoreDivision:
+        type: "array"
+        items:
+          type: "number"
+      nameDivision:
+        type: "array"
+        items:
+          type: "string"
+      pass:
+        type: "boolean"
+      source:
+        $ref: "#/definitions/sentence"
+    example:
+      highToLow:
+      - 4
+      - 0
+      - 1
+      - 3
+      - 2
+      scoreDivision:
+      - 18.699999999999999289457264239899814128875732421875
+      - 12
+      - 0
+      - 2
+      - 26.699999999999999289457264239899814128875732421875
+      nameDivision:
+      - "民眾"
+      - "政府"
+      - "企業"
+      - "專家"
+      - "其他"
+      score: "18.7"
+      pass: 1
+      source:
+        source: "some text is here."
+  requestsErrorRespond:
     type: "object"
     properties:
       code:
@@ -62,16 +259,13 @@ definitions:
     example:
       code: "404"
       text: "rare word"
-  wordDistanceResult_keyWord_verificationWord:
+  serverStatusRespond:
+    type: "object"
     properties:
-      distance:
+      code:
+        type: "string"
+      text:
         type: "string"
     example:
-      distance: "distance"
-  wordDistanceResult_keyWord:
-    properties:
-      verificationWord:
-        $ref: "#/definitions/wordDistanceResult_keyWord_verificationWord"
-    example:
-      verificationWord:
-        distance: "distance"
+      code: "200"
+      text: "working"
