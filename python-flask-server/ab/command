@@ -1,0 +1,1 @@
+ab -c 2 -n 10 -T 'application/json' -p post.data http://140.115.126.216:8082/NLP/speech/emotion
