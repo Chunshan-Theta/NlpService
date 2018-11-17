@@ -10,7 +10,8 @@ Json_file = open(root+"word2vecJson.txt","r")
 Json_file = json.load(Json_file)
 
 def location(text):
-    uni_text=unicode(text,"utf-8")
+    #uni_text=unicode(text,"utf-8")
+    uni_text = text
     try:
         #print(Json_file[uni_text])
         return Json_file[uni_text]
@@ -23,9 +24,20 @@ def Distance(t1,t2):
     return ((x**2+y**2)**0.5)*10000000000
 
 def Distance_word(w1,w2):
-    print(w1+','+w2)
-    print(Distance(location(w1),location(w2)))
+    #print(w1+','+w2)
+    return Distance(location(w1),location(w2))
 
+def Distance_word_list(w1_array,w2_array,type="top"):
+    if type == "top":
+        minDistance = 1000
+        for w1 in w1_array:
+            for w2 in w2_array:
+                unitDistance = Distance_word(w1,w2)
+                if unitDistance < minDistance:
+                    minDistance = unitDistance
+        return minDistance
+    else:
+        raise NameError('type not found')
 
 
 '''
