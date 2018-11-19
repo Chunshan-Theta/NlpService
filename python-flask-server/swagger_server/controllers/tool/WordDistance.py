@@ -14,7 +14,10 @@ def location(text):
     uni_text = text
     try:
         #print(Json_file[uni_text])
-        return Json_file[uni_text]
+        if Json_file[uni_text] is not None:
+            return Json_file[uni_text]
+        else:
+            return
     except KeyError :
         #print(uni_text)
         return
@@ -25,17 +28,57 @@ def Distance(t1,t2):
 
 def Distance_word(w1,w2):
     #print(w1+','+w2)
-    return Distance(location(w1),location(w2))
+    if location(w1) is not None and location(w2) is not None:
+        return float(Distance(location(w1),location(w2)))
+    else:
+        return
 
-def Distance_word_list(w1_array,w2_array,type="top"):
-    if type == "top":
+def Distance_word_list(w1_array,w2_array,type="Min"):
+    if type == "Min":
         minDistance = 1000
         for w1 in w1_array:
             for w2 in w2_array:
                 unitDistance = Distance_word(w1,w2)
-                if unitDistance < minDistance:
-                    minDistance = unitDistance
+                if unitDistance is not None:
+                    if unitDistance < minDistance:
+                        minDistance = unitDistance
         return minDistance
+    elif type == "Average":
+        sumDistance = 0
+        count = 0
+        for w1 in w1_array:
+            for w2 in w2_array:
+                unitDistance = Distance_word(w1,w2)
+                if unitDistance is not None:
+                    sumDistance+=unitDistance
+                    count+=1
+        return sumDistance/count
+    elif type == "Top3":
+        t1,t2,t3 =1000,1000,1000
+        for w1 in w1_array:
+            for w2 in w2_array:
+                unitDistance = Distance_word(w1,w2)
+                if unitDistance is not None:
+                    if t1 > unitDistance:
+                        t1 = unitDistance
+                    elif t2 > unitDistance:
+                        t2 = unitDistance
+                    elif t3 > unitDistance:
+                        t3 = unitDistance
+                    else:
+                        pass
+        print(w1_array)
+        print(w2_array)
+        return t1+t2+t3/3
+    elif type == "Max":
+       maxDistance = 0
+       for w1 in w1_array:
+           for w2 in w2_array:
+               unitDistance = Distance_word(w1,w2)
+               if unitDistance is not None:
+                   if unitDistance > maxDistance:
+                       maxDistance = unitDistance
+       return maxDistance
     else:
         raise NameError('type not found')
 
