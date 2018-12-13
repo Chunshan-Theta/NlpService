@@ -101,10 +101,13 @@ def speech_five_divisions_post(body):  # noqa: E501
             unitDistance = distanceTopAndDivision[Distance_idx]
 
             score = int((maxDistance-unitDistance)/sumDistance*100)
-
-            assert score<=100 and score>=0
-            
-            score_division[Distance_idx] = score
+            if score<=5:
+                score = 5
+            assert score<=100 and score>=5
+            #y = -100/log(x)+150 # 150-100/math.log(score,10)
+            #y = sqrt(x)*10 #math.sqrt(score)*10
+            score = math.sqrt(score)*10
+            score_division[Distance_idx] = int(score)
             dictDistanceDiv[Distance_idx] = unitDistance
         sorted_by_value = sorted(dictDistanceDiv.items(), key=lambda kv: kv[1])
         for i in sorted_by_value:
