@@ -1,6 +1,6 @@
 import connexion
 import six
-
+import math
 from swagger_server.models.five_divisions_result import FiveDivisionsResult  # noqa: E501
 from swagger_server.models.score_analysis_result import ScoreAnalysisResult  # noqa: E501
 from swagger_server.models.sentence import Sentence  # noqa: E501
@@ -35,10 +35,18 @@ def speech_emotion_post(body):  # noqa: E501
             word_array.append(word)
 
         top10 = []
-        for item in jieba.analyse.tfidf(source, topK=10, withWeight=True, allowPOS=('n','v','x')):
+        for item in jieba.analyse.tfidf(source, topK=10, withWeight=True, allowPOS=('a','ad','an','ag','al','v')):
             #print item[0],item[1]
             top10.append(item[0])
-        emotion = 0.0
+
+        name_division_keyWords=[["良好","優勢","正確","挑戰","貢獻","助於","鼓勵","成功"],["不幸","不良","失敗","錯誤","損失","傷","惡","遺憾","不安","造成","突然"]]
+        score_division=[]
+        for division in name_division_keyWords:
+            assert type(division) is list
+            assert type(top10) is list
+            score_division.append(WD.Distance_word_list(top10,division))
+
+        emotion = score_division[1]-score_division[0]
         sentence = Sentence(source, word_array, top10, emotion)
         return sentence,200
     else:
@@ -75,18 +83,29 @@ def speech_five_divisions_post(body):  # noqa: E501
 
 
 
-        name_division=["民眾","政府","企業","專家","環境"]
-        name_division_keyWords=[["民眾","大家","健康","安全"],["政府","國家","法律","發展"],["企業","成本","經濟","產品"],["專家","技術","分析","資料"],["環境","生態","污染","生物"]]
-        score_division=[]
+        name_division=["民眾","政府","經濟","可行性","永續"]
+        name_division_keyWords=[["民眾","大家","健康","安全","規定"],["政府","國家","法律","發展","事故"],["企業","成本","經濟","產品","營運"],["專家","技術","分析","資料","統計"],["環境","生態","污染","生物","危害"]]
+        distanceTopAndDivision=[]
         for division in name_division_keyWords:
             assert type(division) is list
             assert type(top10) is list
-            score_division.append(WD.Distance_word_list(top10,division))
+            distanceTopAndDivision.append(WD.Distance_word_list(top10,division))
         high_to_low = []
         dictDistanceDiv = {}
-        for Distance_idx in range(len(score_division)):
-            Distance =score_division[Distance_idx]
-            dictDistanceDiv[Distance_idx] = Distance
+        divisionLength = len(distanceTopAndDivision)
+        score_division = [None]*divisionLength
+        maxDistance = int(max(distanceTopAndDivision))+1
+        sumDistance = int(sum(distanceTopAndDivision))+1
+        for Distance_idx in range(divisionLength):
+            #Distance =distanceTopAndDivision[Distance_idx]
+            unitDistance = distanceTopAndDivision[Distance_idx]
+
+            score = int((maxDistance-unitDistance)/sumDistance*100)
+
+            assert score<=100 and score>=0
+            
+            score_division[Distance_idx] = score
+            dictDistanceDiv[Distance_idx] = unitDistance
         sorted_by_value = sorted(dictDistanceDiv.items(), key=lambda kv: kv[1])
         for i in sorted_by_value:
             high_to_low.append(i[0])

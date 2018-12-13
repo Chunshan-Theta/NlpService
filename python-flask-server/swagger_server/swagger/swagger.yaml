@@ -169,25 +169,24 @@ definitions:
       top10:
         type: "array"
         items:
-          $ref: "#/definitions/word"
+          type: "string"
       emotion:
         type: "number"
     example:
       top10:
-      - emotion: 6.02745618307040320615897144307382404804229736328125
-        word2vec: 0.80082819046101150206595775671303272247314453125
-        content: "content"
-      - emotion: 6.02745618307040320615897144307382404804229736328125
-        word2vec: 0.80082819046101150206595775671303272247314453125
-        content: "content"
-      emotion: 1.46581298050294517310021547018550336360931396484375
+      - "something keyword"
+      - "something keyword"
+      - "something words"
+      - "something words"
+      - "something words"
+      - "something words"
       wordArray:
-      - emotion: 6.02745618307040320615897144307382404804229736328125
-        word2vec: 0.80082819046101150206595775671303272247314453125
-        content: "content"
-      - emotion: 6.02745618307040320615897144307382404804229736328125
-        word2vec: 0.80082819046101150206595775671303272247314453125
-        content: "content"
+      - "something keyword"
+      - "something words"
+      - "something keyword"
+      - "something words"
+      - "something words"
+      - "something words"
       source: "source"
   speech:
     type: "object"
@@ -199,8 +198,8 @@ definitions:
       topic:
         type: "string"
     example:
-      source: "some text is here."
-      topic: "some text about topic is here ."
+      source: "用基因改造的馬鈴薯餵食老鼠會讓老鼠出現健康問題，還有為期兩年的基因改造玉米餵食老鼠試驗中，他與同仁發現基改玉米NK603與除草劑年年春都會讓老鼠提早長出更多的腫瘤，都證明沒有人可以保證基改對人類完全有益無壞，那它是危險的，自然大家不接受它，市場也會排斥它，就不會有需求了"
+      topic: "基改食品的出現，固然出自於商業化的利益考量，但最初的動力其實就是為了解決問題，就像這次的基改馬鈴薯，最初的研發目的就是為了降低馬鈴薯製品中可能會對健康有疑慮的丙烯醯胺（儘管丙烯醯胺是否真的有危害，目前尚不清楚），其實是站在健康利益的考量，然而民眾對於基改食品的不了解與妖魔化，加上媒體的過分渲染，才演變成今日看到基改就喊打的現象。至於許多人提出的質疑，認為基改作物會傷害環境，例如有抗除草劑基因的黃豆會污染傳統黃豆，或者會讓農民無形中噴灑過量除草劑，進而損害環境，不過從剛才的表格就可以得知，此次基改馬鈴薯所使用的轉殖基因，皆是原本就存在於馬鈴薯中的基因，與除草劑的案例其實不能相提並論。"
   scoreAnalysisResult:
     type: "object"
     properties:
