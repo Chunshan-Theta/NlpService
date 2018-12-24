@@ -8,13 +8,18 @@ from swagger_server.models.speech import Speech  # noqa: E501
 from swagger_server import util
 
 
+
 #local
-from swagger_server.controllers.tool import WordDistance as WD
+from swagger_server.controllers.tool import calculateWordVecDistance as WD
 from swagger_server.controllers.tool.jieba_zn import jieba
-from swagger_server.controllers.tool.jieba_zn.jieba import posseg as pseg
+#from swagger_server.controllers.tool.jieba_zn.jieba import posseg as pseg
 from swagger_server.controllers.tool.jieba_zn.jieba import analyse
-
-
+'''
+import os
+from os.path import dirname, realpath, sep, pardir
+root = dirname(realpath(__file__)) + sep
+jieba.load_userdict(root+'tool/dict.new.tw')
+'''
 def speech_emotion_post(body):  # noqa: E501
     """
 
@@ -30,14 +35,10 @@ def speech_emotion_post(body):  # noqa: E501
         source = body.source
         topic = body.topic
         word_array=[]
-        for word, flag in pseg.cut(source):
-            #print('%s %s' % (word, flag))
-            word_array.append(word)
-
-        topKeyword = []
-        for item in jieba.analyse.tfidf(source, topK=10, withWeight=True, allowPOS=('a','ad','an','ag','al','v')):
+        for item in jieba.analyse.tfidf(source, topK=None, withWeight=True, allowPOS=False):
             #print item[0],item[1]
-            topKeyword.append(item[0])
+            word_array.append(item[0])
+        topKeyword = word_array[:10]
 
         name_division_keyWords=[["良好","優勢","正確","挑戰","貢獻","助於","鼓勵","成功"],["不幸","不良","失敗","錯誤","損失","傷","惡","遺憾","不安","造成","突然"]]
         score_division=[]
@@ -70,12 +71,12 @@ def speech_five_divisions_post(body):  # noqa: E501
 
         # class sentence
         word_array=[]
-        for word, flag in pseg.cut(source):
+        for word in jieba.cut(source,cut_all=False):
             #print('%s %s' % (word, flag))
             word_array.append(word)
 
         topKeyword = []
-        for item in jieba.analyse.tfidf(source, topK=30, withWeight=True, allowPOS=('n','v')):
+        for item in jieba.analyse.tfidf(source, topK=30, withWeight=True, allowPOS=False):
             #print item[0],item[1]
             topKeyword.append(item[0])
         emotion = 0.0
@@ -93,33 +94,32 @@ def speech_five_divisions_post(body):  # noqa: E501
         high_to_low = []
         dictDistanceDiv = {}
         divisionLength = len(distanceTopAndDivision)
-        score_division = [None]*divisionLength
         maxDistance = int(max(distanceTopAndDivision))+1
-        sumDistance = int(sum(distanceTopAndDivision))+1
-        sourceLength = len(source)
-        ScoreWeight = sourceLength/(100*15) if sourceLength/(100*15)>0.1 else 0.1
-        ScoreWeight = ScoreWeight if ScoreWeight<=2.5 else 2.5
+        score_division = [None]*divisionLength
         for Distance_idx in range(divisionLength):
-            #y = -100/log(x)+150 # 150-100/math.log(score,10)
-            #y = sqrt(x)*10 #math.sqrt(score)*10
-            #Distance =distanceTopAndDivision[Distance_idx]
             unitDistance = distanceTopAndDivision[Distance_idx]
-            score = int((maxDistance-unitDistance)/sumDistance*100) if int((maxDistance-unitDistance)/sumDistance*100)>0 else 0
-            score = math.sqrt(score)*10*ScoreWeight
-            score = score if score<=100 else 100
-
-
-            assert score<=100 and score>=0
-            score_division[Distance_idx] = int(score)
             dictDistanceDiv[Distance_idx] = unitDistance
-        averageScore = sum(score_division) / float(divisionLength)
-        minScore = min(score_division)    
-        while averageScore-minScore>35:
-            averageScore = sum(score_division) / float(divisionLength)
-            minScore = min(score_division)
-            for Distance_idx in range(divisionLength):
-                score = score_division[Distance_idx]
-                score_division[Distance_idx] = int(math.sqrt(score)*10)
+            score_division[Distance_idx] = maxDistance-unitDistance
+
+        # smooth score
+        highestScore = max(score_division)
+        lowestScore = min(score_division)
+        while highestScore-lowestScore>=35:
+            for idx in range(divisionLength):
+                score_division[idx] = (score_division[idx]**0.5)*10
+                # keep score under 100
+                score_division[idx] = score_division[idx] if score_division[idx] <= 100 else 100
+            highestScore = max(score_division)
+            lowestScore = min(score_division)
+
+        #level
+        #assume complete discussion needs 50-time conversation, and each speech's length is 10 words.
+        allWordsCount = 1000
+        level = len(source)/allWordsCount if len(source)/allWordsCount<=1 else 1
+        level = level if level>=0.1 else 0.1
+        for idx in range(divisionLength):
+            score_division[idx] = score_division[idx]*level
+
 
         sorted_by_value = sorted(dictDistanceDiv.items(), key=lambda kv: kv[1])
         for i in sorted_by_value:
@@ -154,25 +154,24 @@ def speech_score_post(body):  # noqa: E501
 
         # class sentence
         word_array=[]
-        for word, flag in pseg.cut(source):
-            #print('%s %s' % (word, flag))
-            word_array.append(word)
-
         topKeyword = []
-        for item in jieba.analyse.tfidf(source, topK=10, withWeight=True, allowPOS=('n','nr','ng','ns','nt','nz','nrt','nrfg')):
+
+
+        for word,f in jieba.analyse.tfidf(source, topK=None, withWeight=True, allowPOS=False):
             #print item[0],item[1]
-            topKeyword.append(item[0])
+            word_array.append(word)
+        topKeyword = word_array[:10]
         emotion = 0.0
         sentence = Sentence(source, word_array, topKeyword, emotion)
 
         topicWordArray=[]
-        for word, flag in jieba.analyse.tfidf(topic, topK=10, withWeight=True, allowPOS=('n','nr','ng','ns','nt','nz','nrt','nrfg')):
+        for word ,f in jieba.analyse.tfidf(topic, topK=None, withWeight=True, allowPOS=False):
             #print('%s %s' % (word, flag))
             topicWordArray.append(word)
 
         assert type(topicWordArray) is list
         assert type(topKeyword) is list
-        score = 300 - WD.Distance_word_list(topKeyword,topicWordArray,"Top3")
+        score = 30 - WD.Distance_word_list(topKeyword,topicWordArray,"Min")
 
 
         _pass = False

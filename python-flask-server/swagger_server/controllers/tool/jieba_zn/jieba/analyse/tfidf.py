@@ -95,7 +95,7 @@ class TFIDF(KeywordExtractor):
             allowPOS = frozenset(allowPOS)
             words = self.postokenizer.cut(sentence)
         else:
-            words = self.tokenizer.cut(sentence)
+            words = self.tokenizer.cut(sentence,cut_all=True)
         freq = {}
         for w in words:
             if allowPOS:

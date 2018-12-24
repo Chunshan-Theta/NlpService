@@ -188,6 +188,7 @@ definitions:
       - "something words"
       - "something words"
       source: "source"
+      emotion: "-1.22"
   speech:
     type: "object"
     required:
