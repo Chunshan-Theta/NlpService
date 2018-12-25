@@ -4,9 +4,14 @@
 import os
 import sys
 
+jiebaRoot = os.path.dirname(os.path.abspath(__file__))
+jiebaRoot = jiebaRoot[:jiebaRoot.rfind("/")]
+jiebaRoot = jiebaRoot[:jiebaRoot.rfind("/")]
+sys.path.append(jiebaRoot)
 
-from ... import jieba
-from .. import posseg
+
+import jieba
+import jieba.posseg
 from operator import itemgetter
 
 
