@@ -1,0 +1,35 @@
+{
+  "nodes": [
+    {"id": "Tom", "group": 1},
+    {"id": "Gavin", "group": 2},
+    {"id": "韓國瑜", "group": 3},
+    {"id": "網友A", "group": 4},
+    {"id": "出訪", "group": 0},
+    {"id": "星馬", "group": 0},
+    {"id": "店家", "group": 0},
+    {"id": "超市", "group": 0},
+    {"id": "訂單", "group": 0},
+    {"id": "農產品", "group": 0}
+
+  ],
+  "links": [
+    {"source": "Tom", "target": "出訪", "value": 71, "group": 1},
+    {"source": "Gavin", "target": "出訪", "value": 21, "group": 2},
+    {"source": "韓國瑜", "target": "出訪", "value": 1, "group": 3},
+
+    {"source": "韓國瑜", "target": "星馬", "value": 5, "group": 3},
+    {"source": "網友A", "target": "星馬", "value": 4, "group": 4},
+    {"source": "Gavin", "target": "店家", "value": 21, "group": 2},
+
+    {"source": "網友A", "target": "店家", "value": 13, "group": 4},
+    {"source": "Gavin", "target": "農產品", "value": 21, "group": 2},
+    {"source": "Tom", "target": "農產品", "value": 9, "group": 1},
+    {"source": "韓國瑜", "target": "農產品", "value": 144, "group": 3},
+
+    {"source": "Tom", "target": "超市", "value": 9, "group": 1},
+    {"source": "韓國瑜", "target": "超市", "value": 2, "group": 3},
+    {"source": "網友A", "target": "超市", "value": 14, "group": 4},
+    {"source": "Gavin", "target": "訂單", "value": 21, "group": 2},
+    {"source": "網友A", "target": "訂單", "value": 7, "group": 4}
+  ]
+}
