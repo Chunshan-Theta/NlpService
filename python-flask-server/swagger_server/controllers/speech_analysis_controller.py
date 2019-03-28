@@ -14,6 +14,7 @@ from swagger_server.controllers.tool import calculateWordVecDistance as WD
 from swagger_server.controllers.tool.jieba_zn import jieba
 #from swagger_server.controllers.tool.jieba_zn.jieba import posseg as pseg
 from swagger_server.controllers.tool.jieba_zn.jieba import analyse
+from swagger_server.controllers.tool.sentiment import testingSpeech
 '''
 import os
 from os.path import dirname, realpath, sep, pardir
@@ -35,6 +36,7 @@ def speech_emotion_post(body):  # noqa: E501
         source = body.source
         topic = body.topic
         word_array=[]
+
         for item in jieba.analyse.tfidf(source, topK=None, withWeight=True, allowPOS=False):
             #print item[0],item[1]
             word_array.append(item[0])
@@ -48,6 +50,9 @@ def speech_emotion_post(body):  # noqa: E501
             score_division.append(WD.Distance_word_list(topKeyword,division))
 
         emotion = score_division[1]-score_division[0]
+        print(emotion)
+        emotion = float(testingSpeech(source)[1])
+        print(emotion)
         sentence = Sentence(source, word_array, topKeyword, emotion)
         return sentence,200
     else:
